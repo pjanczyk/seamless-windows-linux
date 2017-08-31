@@ -1,0 +1,1 @@
+@python3 "%~dp0bash_linux.py" %*
