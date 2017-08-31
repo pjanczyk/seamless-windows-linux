@@ -11,7 +11,7 @@ linux_hostname = "pj-ubuntu"
 linux_shell = "bash"
 
 if len(sys.argv) == 1:
-    working_directory = "~"
+    working_directory = None
 elif len(sys.argv) == 2 and sys.argv[1] != "--help":
     working_directory = path_translation.windows_to_linux(sys.argv[1])
 else:
@@ -29,9 +29,15 @@ if is_64bits:
 else:
     wsl_bash = r"%windir%\Sysnative\bash.exe"
 
-command = '{} -c "ssh -t {}@{} \'cd \\"{}\\"; {}\'"'.format(
-    wsl_bash, linux_user, linux_hostname, working_directory, linux_shell
-)
+if working_directory is not None:
+    command = '{} -c "ssh -t {}@{} \'cd \\"{}\\"; {}\'"'.format(
+        wsl_bash, linux_user, linux_hostname, working_directory, linux_shell
+    )
+else:
+    command = '{} -c "ssh -t {}@{} \'{}\'"'.format(
+        wsl_bash, linux_user, linux_hostname, linux_shell
+    )
+
 # e.g. %windir%\System32\bash.exe -c "ssh -t john@192.168.0.2 'cd \"/c/Users/John\"; bash'"
 
 os.system(command)
